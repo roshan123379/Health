@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:5174'];
+const allowedOrigins = ['https://profound-quokka-974378.netlify.app/', 'https://profound-quokka-974378.netlify.app/'];
 app.use(cors({
   origin: (origin, callback) => {
     console.log('CORS origin received:', origin);
