@@ -12,23 +12,34 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
-const allowedOrigins = ['https://profound-quokka-974378.netlify.app/', 'https://profound-quokka-974378.netlify.app/'];
-app.use(cors({
+const allowedOrigins = [
+  'https://profound-quokka-974378.netlify.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+];
+
+const normalizeOrigin = (origin) => origin?.replace(/\/$/, '');
+
+const corsOptions = {
   origin: (origin, callback) => {
-    console.log('CORS origin received:', origin);
+    const normalizedOrigin = normalizeOrigin(origin);
+    console.log('CORS origin received:', normalizedOrigin);
     // allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
+    if (allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
-    console.log('CORS origin rejected:', origin);
+    console.log('CORS origin rejected:', normalizedOrigin);
     return callback(new Error('Not allowed by CORS'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
   credentials: true,
   optionsSuccessStatus: 204,
-}));
+};
+
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 import userRoutes from './Routes/userRoute.js';
 import microplanRoutes from './Routes/microplanRoute.js';
